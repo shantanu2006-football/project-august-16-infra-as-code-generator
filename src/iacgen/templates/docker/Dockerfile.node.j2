@@ -1,0 +1,12 @@
+FROM node:{{ node_version }}-slim
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY . .
+
+EXPOSE {{ port }}
+
+CMD ["node", "index.js"]
