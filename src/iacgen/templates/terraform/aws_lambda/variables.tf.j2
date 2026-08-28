@@ -1,0 +1,35 @@
+variable "aws_region" {
+  description = "AWS region to deploy into."
+  type        = string
+  default     = "{{ aws_region }}"
+}
+
+variable "project_name" {
+  description = "Name used to prefix all created resources."
+  type        = string
+  default     = "{{ project_name }}"
+}
+
+variable "runtime" {
+  description = "Lambda runtime identifier."
+  type        = string
+  default     = "{{ lambda_runtime }}"
+}
+
+variable "handler" {
+  description = "Function handler entry point."
+  type        = string
+  default     = "{{ lambda_handler }}"
+}
+
+variable "memory_size" {
+  description = "Memory allocated to the function, in MB."
+  type        = number
+  default     = 256
+}
+
+variable "timeout" {
+  description = "Function timeout, in seconds."
+  type        = number
+  default     = 15
+}

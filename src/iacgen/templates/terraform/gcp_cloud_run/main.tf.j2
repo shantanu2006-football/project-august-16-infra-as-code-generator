@@ -1,0 +1,31 @@
+resource "google_artifact_registry_repository" "app" {
+  location      = var.gcp_region
+  repository_id = var.project_name
+  format        = "DOCKER"
+}
+
+resource "google_cloud_run_v2_service" "app" {
+  name     = var.project_name
+  location = var.gcp_region
+  ingress  = "INGRESS_TRAFFIC_ALL"
+
+  template {
+    containers {
+      image = var.container_image
+
+      ports {
+        container_port = var.container_port
+      }
+    }
+  }
+
+  depends_on = [google_artifact_registry_repository.app]
+}
+
+resource "google_cloud_run_v2_service_iam_member" "public_access" {
+  count    = var.allow_unauthenticated ? 1 : 0
+  location = google_cloud_run_v2_service.app.location
+  name     = google_cloud_run_v2_service.app.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}

@@ -1,0 +1,41 @@
+variable "aws_region" {
+  description = "AWS region to deploy into."
+  type        = string
+  default     = "{{ aws_region }}"
+}
+
+variable "project_name" {
+  description = "Name used to prefix all created resources."
+  type        = string
+  default     = "{{ project_name }}"
+}
+
+variable "container_port" {
+  description = "Port the application container listens on."
+  type        = number
+  default     = {{ port }}
+}
+
+variable "container_image" {
+  description = "Full image URI (including tag) to deploy. Overridden by CI on each deploy."
+  type        = string
+  default     = "{{ registry_or_default }}:latest"
+}
+
+variable "desired_count" {
+  description = "Number of ECS tasks to run."
+  type        = number
+  default     = 1
+}
+
+variable "task_cpu" {
+  description = "Fargate task vCPU units."
+  type        = string
+  default     = "256"
+}
+
+variable "task_memory" {
+  description = "Fargate task memory (MiB)."
+  type        = string
+  default     = "512"
+}

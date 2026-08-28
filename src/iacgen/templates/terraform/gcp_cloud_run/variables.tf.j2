@@ -1,0 +1,35 @@
+variable "gcp_project_id" {
+  description = "GCP project ID to deploy into."
+  type        = string
+  default     = "{{ gcp_project_id }}"
+}
+
+variable "gcp_region" {
+  description = "GCP region to deploy into."
+  type        = string
+  default     = "{{ gcp_region }}"
+}
+
+variable "project_name" {
+  description = "Name used for the Cloud Run service and Artifact Registry repo."
+  type        = string
+  default     = "{{ project_name }}"
+}
+
+variable "container_port" {
+  description = "Port the application container listens on."
+  type        = number
+  default     = {{ port }}
+}
+
+variable "container_image" {
+  description = "Full image URI (including tag) to deploy. Overridden by CI on each deploy."
+  type        = string
+  default     = "{{ registry_or_default }}:latest"
+}
+
+variable "allow_unauthenticated" {
+  description = "Whether the service is publicly invocable without auth."
+  type        = bool
+  default     = true
+}

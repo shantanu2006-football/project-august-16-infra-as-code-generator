@@ -1,0 +1,14 @@
+output "function_name" {
+  description = "Name of the deployed Lambda function."
+  value       = aws_lambda_function.app.function_name
+}
+
+output "function_arn" {
+  description = "ARN of the deployed Lambda function."
+  value       = aws_lambda_function.app.arn
+}
+
+output "function_url" {
+  description = "Public HTTPS endpoint for the function."
+  value       = aws_lambda_function_url.app.function_url
+}

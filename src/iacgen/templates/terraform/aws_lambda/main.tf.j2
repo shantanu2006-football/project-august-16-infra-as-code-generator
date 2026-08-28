@@ -1,0 +1,44 @@
+resource "aws_iam_role" "lambda_exec" {
+  name = "${var.project_name}-lambda-exec-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "lambda.amazonaws.com" }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_basic" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_cloudwatch_log_group" "lambda" {
+  name              = "/aws/lambda/${var.project_name}"
+  retention_in_days = 14
+}
+
+# The deployment package (function.zip) is built and refreshed by the CI/CD
+# pipeline. This module manages the function's infrastructure; run the CI
+# workflow (or `iacgen`-generated build step) at least once before `apply`
+# so that ./function.zip exists.
+resource "aws_lambda_function" "app" {
+  function_name    = var.project_name
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = var.handler
+  runtime          = var.runtime
+  memory_size      = var.memory_size
+  timeout          = var.timeout
+  filename         = "${path.module}/function.zip"
+  source_code_hash = filebase64sha256("${path.module}/function.zip")
+
+  depends_on = [aws_cloudwatch_log_group.lambda]
+}
+
+resource "aws_lambda_function_url" "app" {
+  function_name      = aws_lambda_function.app.function_name
+  authorization_type = "NONE"
+}
